@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	pubKeyBeginArmor  = "-----BEGIN PUBLIC KEY-----"
-	pubKeyEndArmor    = "-----END PUBLIC KEY-----"
-	privKeyBeginArmor = "-----BEGIN PRIVATE KEY-----"
-	privKeyEndArmor   = "-----END PRIVATE KEY-----"
+	pubKeyBeginArmor  = "-----BEGIN RSA PUBLIC KEY-----"
+	pubKeyEndArmor    = "-----END RSA PUBLIC KEY-----"
+	privKeyBeginArmor = "-----BEGIN RSA PRIVATE KEY-----"
+	privKeyEndArmor   = "-----END RSA PRIVATE KEY-----"
 )
 
 func ReadPublicKeyFromPEMFile(filepath string) (*rsa.PublicKey, error) {
@@ -26,7 +26,7 @@ func ReadPublicKeyFromPEMFile(filepath string) (*rsa.PublicKey, error) {
 
 func ReadPublicKeyFromPEM(pemContents []byte) (*rsa.PublicKey, error) {
 	for block, rest := pem.Decode(pemContents); block != nil; block, rest = pem.Decode(rest) {
-		if block.Type == "PUBLIC KEY" {
+		if block.Type == "RSA PUBLIC KEY" {
 			return x509.ParsePKCS1PublicKey(block.Bytes)
 		}
 	}
@@ -39,7 +39,7 @@ func FormatPublicKeyForPEMFile(publicKey *rsa.PublicKey) (string, error) {
 	}
 	pubKeyBytes := x509.MarshalPKCS1PublicKey(publicKey)
 	pemBytes := pem.EncodeToMemory(&pem.Block{
-		Type:  "PUBLIC KEY",
+		Type:  "RSA PUBLIC KEY",
 		Bytes: pubKeyBytes,
 	})
 	return string(pemBytes), nil
@@ -70,7 +70,7 @@ func ReadPrivateKeyFromPEMFile(filepath string) (*rsa.PrivateKey, error) {
 
 func ReadPrivateKeyFromPEM(pemContents []byte) (*rsa.PrivateKey, error) {
 	for block, rest := pem.Decode(pemContents); block != nil; block, rest = pem.Decode(rest) {
-		if block.Type == "PRIVATE KEY" {
+		if block.Type == "RSA PRIVATE KEY" {
 			return x509.ParsePKCS1PrivateKey(block.Bytes)
 		}
 	}
@@ -83,7 +83,7 @@ func FormatPrivateKeyForPEMFile(privateKey *rsa.PrivateKey) (string, error) {
 	}
 	privKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
 	pemBytes := pem.EncodeToMemory(&pem.Block{
-		Type:  "PRIVATE KEY",
+		Type:  "RSA PRIVATE KEY",
 		Bytes: privKeyBytes,
 	})
 	return string(pemBytes), nil
